@@ -1,11 +1,11 @@
 let levels = [
   { target: 50, ops: ["+3", "+7"], mode: 0 },
-  { target: 65, ops: ["+3", "+7"], mode: 1 },
+  { target: 65, ops: ["+3", "+7"], mode: 0 },
   { target: 101, ops: ["+3", "+7"], mode: 1 },
   { target: 60, ops: ["-4", "+9"], mode: 0 },
   { target: 119, ops: ["-4", "+9"], mode: 1 },
   { target: 70, ops: ["-9", "+4"], mode: 1 },
-  { target: 50, ops: ["3.9", "1.4"], mode: 0},
+  { target: 50, ops: ["3.9", "1.4"], mode: 0 },
   { target: 60, ops: ["-4", "+9"], mode: 2 },
 ];
 
@@ -36,7 +36,9 @@ function render() {
     targetDisplay.style.color = "#00ff66";
     targetDisplay.style.textShadow = "0 0 15px #00ff66";
     document.getElementById("hint").textContent = 'You did it!';
-    setTimeout(nextLevel, 2000);
+    
+    document.getElementById("next").style.display = "inline-block";
+    buttonsContainer.querySelectorAll("button[data-op]").forEach(btn => btn.disabled = true);
 
   } else { 
     totalDisplay.style.color = "#fff";
@@ -71,6 +73,7 @@ function nextLevel() {
     totalDisplay.style.color = "#00ff66";
     totalDisplay.style.textShadow = "0 0 20px #00ff66";
     buttonsContainer.querySelectorAll("button[data-op]").forEach(btn => btn.disabled = true);
+    document.getElementById("next").style.display = "none";
   }
 }
 
@@ -88,6 +91,9 @@ function loadLevel() {
   }
 
   buttonsContainer.querySelectorAll(".op-wrapper").forEach(el => el.remove());
+
+  document.getElementById("next").style.display = "none";
+  buttonsContainer.querySelectorAll("button[data-op]").forEach(btn => btn.disabled = false);
 
   ops.forEach(op => {
     pressCounts[op] = 0;
@@ -142,6 +148,11 @@ resetButton.addEventListener("click", () => {
   for (const op in pressCounts) pressCounts[op] = 0;
   render();
 });
+
+document.getElementById("next").addEventListener("click", () => {
+  nextLevel();
+});
+
 
 function minPressesToTarget(target, ops) {
   const queue = [{ value: 0, steps: 0 }];
