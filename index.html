@@ -14,7 +14,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
       max-width: 600px;
       margin: 0 auto;
@@ -66,10 +66,15 @@
       align-items: center;
     }
 
-    button:hover {
+    button:hover:not(:disabled) {
       background-color: #333;
       transform: scale(1.1);
       box-shadow: 0 0 10px #555;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     #reset {
@@ -80,20 +85,45 @@
       background-color: #aa0000;
       box-shadow: 0 0 10px #ff3333;
     }
+
+    #reselect:hover {
+      background-color: #a05000;
+      box-shadow: 0 0 10px #ff8833;
+    }
+
+    #selection-ui {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    #game-ui {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
-  <h1><span id="target"></span></h1>
-
-  <div id="screen">
-    <div id="total">0</div>
+  <div id="selection-ui">
+    <!-- Selection interface will be dynamically populated -->
   </div>
 
-  <div id="hint"></div>
+  <div id="game-ui">
+    <h1><span id="target"></span></h1>
 
-  <div class="buttons">
-    <button id="reset">Reset</button>
-    <button id="next" style="display:none;">Next Room</button>
+    <div id="screen">
+      <div id="total">0</div>
+    </div>
+
+    <div id="hint"></div>
+
+    <div class="buttons">
+      <button id="reset">Reset</button>
+      <button id="reselect" style="display:none; background-color: #804000;">Choose Different Operations</button>
+      <button id="next" style="display:none;">Next Room</button>
+    </div>
   </div>
   <script src="main.js"></script>
 </body>
