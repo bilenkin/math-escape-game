@@ -6,7 +6,6 @@ let levels = [
   { target: 119, ops: ["-4", "+9"], mode: 1 },
   { target: 70, ops: ["-9", "+4"], mode: 1 },
   { target: 50, ops: ["+3.9", "+1.4"], mode: 0 },
-  { target: 60, ops: ["-4", "+9"], mode: 2 },
 ];
 
 let currentLevel = 0;
@@ -25,7 +24,6 @@ function floatsEqual(a, b, tolerance = 1e-10) {
 
 function render() {
   const { target, mode, comboAnswer } = levels[currentLevel];
-  const goal = (mode === 2) ? comboAnswer : target;
   const format = n => parseFloat(n.toFixed(1));
 
   targetDisplay.textContent = target;
@@ -36,7 +34,7 @@ function render() {
     if (label) label.textContent = `×${count}`;
   }
 
-  if (floatsEqual(total, goal)) {
+  if (floatsEqual(total, target)) {
     totalDisplay.style.color = "#00ff66";
     totalDisplay.style.textShadow = "0 0 15px #00ff66";
     targetDisplay.style.color = "#00ff66";
@@ -87,13 +85,6 @@ function loadLevel() {
   const { ops, mode, target } = levels[currentLevel];
   pressCounts = {};
   minStepsAllowed = null;
-
-  if (mode === 2) {
-    const comboCount = countCombinations(target, ops);
-    levels[currentLevel].comboAnswer = comboCount;
-    hint = document.getElementById("hint");
-    hint.innerHTML = 'Kidnapped mathematicians have managed to escape <strong>too many different ways!</strong><br><br>Now you can only escape by determining the number of unique ways to escape! (The order of button presses doesn\'t matter).';
-  }
 
   buttonsContainer.querySelectorAll(".op-wrapper").forEach(el => el.remove());
 
@@ -182,27 +173,6 @@ function minPressesToTarget(target, ops) {
         queue.push({ value: next, steps: steps + 1 });
       }
     }
-  }
-
-  return null;
-}
-
-function countCombinations(target, ops) {
-  const nums = ops.map(op => {
-    const sign = op[0] === '-' ? -1 : 1;
-    return sign * parseFloat(op.slice(1));
-  });
-
-  // This works if there are exactly 2 operations. Doesn't work yet with more than 2 lol
-  if (nums.length === 2) {
-    let count = 0;
-    const [a, b] = nums;
-    for (let x = 0; x <= 100; x++) {
-      for (let y = 0; y <= 100; y++) {
-        if (a * x + b * y === target) count++;
-      }
-    }
-    return count;
   }
 
   return null;
