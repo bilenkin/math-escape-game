@@ -5,7 +5,7 @@ let levels = [
   { target: 60, ops: ["-4", "+9"], mode: 0 },
   { target: 119, ops: ["-4", "+9"], mode: 1 },
   { target: 70, ops: ["-9", "+4"], mode: 1 },
-  { target: 50, ops: ["3.9", "1.4"], mode: 0 },
+  { target: 50, ops: ["+3.9", "+1.4"], mode: 0 },
   { target: 60, ops: ["-4", "+9"], mode: 2 },
 ];
 
@@ -19,18 +19,24 @@ const targetDisplay = document.getElementById("target");
 const buttonsContainer = document.querySelector(".buttons");
 const resetButton = document.getElementById("reset");
 
+function floatsEqual(a, b, tolerance = 1e-10) {
+  return Math.abs(a - b) < tolerance;
+}
+
 function render() {
   const { target, mode, comboAnswer } = levels[currentLevel];
   const goal = (mode === 2) ? comboAnswer : target;
+  const format = n => parseFloat(n.toFixed(1));
+
   targetDisplay.textContent = target;
-  totalDisplay.textContent = total;
+  totalDisplay.textContent = format(total);
 
   for (const [op, count] of Object.entries(pressCounts)) {
     const label = document.querySelector(`.count-label[data-op="${op}"]`);
     if (label) label.textContent = `×${count}`;
   }
 
-  if (total === goal) {
+  if (floatsEqual(total, goal)) {
     totalDisplay.style.color = "#00ff66";
     totalDisplay.style.textShadow = "0 0 15px #00ff66";
     targetDisplay.style.color = "#00ff66";
@@ -81,7 +87,6 @@ function loadLevel() {
   const { ops, mode, target } = levels[currentLevel];
   pressCounts = {};
   minStepsAllowed = null;
-  console.log(countCombinations(target, ops));
 
   if (mode === 2) {
     const comboCount = countCombinations(target, ops);
